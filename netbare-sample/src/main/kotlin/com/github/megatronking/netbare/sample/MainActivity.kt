@@ -55,6 +55,9 @@ class MainActivity : AppCompatActivity(), NetBareListener {
     }
 
     override fun onServiceStopped() {
+        // 启动NetBare服务
+        mNetBare.start(NetBareConfig.defaultHttpConfig(App.getInstance().getJSK(),
+                interceptorFactories()))
         runOnUiThread {
             mActionButton.setText(R.string.start_netbare)
         }
