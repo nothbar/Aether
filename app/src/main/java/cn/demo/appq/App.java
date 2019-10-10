@@ -7,6 +7,7 @@ import com.github.megatronking.netbare.NetBare;
 import com.github.megatronking.netbare.NetBareUtils;
 import com.github.megatronking.netbare.ssl.JKS;
 
+import cn.demo.appq.utils.L;
 import me.weishu.reflection.Reflection;
 
 public class App extends Application {
@@ -20,11 +21,15 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
+
+        L.i("=======================================================");
+        L.i("===============Application.onCreate===============");
+        L.i("=======================================================");
         // 创建自签证书
         mJKS = new JKS(this, JSK_ALIAS, JSK_ALIAS.toCharArray(), JSK_ALIAS, JSK_ALIAS,
                 JSK_ALIAS, JSK_ALIAS, JSK_ALIAS);
         // 初始化NetBare
-        NetBare.get().attachApplication(this, false);
+        NetBare.get().attachApplication(this, true);
     }
 
     public static JKS getJKS() {
