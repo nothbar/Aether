@@ -3,6 +3,8 @@ package cn.demo.appq.utils;
 
 import android.text.TextUtils;
 
+import com.github.megatronking.netbare.L;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

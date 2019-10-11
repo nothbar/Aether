@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.github.megatronking.netbare.L;
 import com.github.megatronking.netbare.http.HttpIndexedInterceptor;
 import com.github.megatronking.netbare.http.HttpInterceptor;
 import com.github.megatronking.netbare.http.HttpInterceptorFactory;
@@ -35,9 +36,11 @@ public class Ainterceptor extends HttpIndexedInterceptor {
     protected void intercept(@NonNull HttpRequestChain chain, @NonNull ByteBuffer buffer, int index) throws IOException {
         try {
             if (index == 0) {
-                // 一个请求可能会有多个数据包，故此方法会多次触发，这里只在收到第一个包的时候打印
+                // 一个请求可能会有多个数据包，故e此方法会多次触发，这里只在收到第一个包的时候打印
                 Log.i(TAG, "Request URL[" + index + "]: " + chain.request().url());
-                Log.i(TAG, "Request UID[" + index + "]: " + chain.request().uid());
+                int uid = chain.request().uid();
+                String pkg = App.getProcessNameByUid(uid);
+                Log.e(TAG, "Request UID[" + index + "]: " + chain.request().uid() + "------pkg:" + pkg);
                 Log.i(TAG, "Request clientHttp2Settings[" + index + "]: " + chain.request().clientHttp2Settings());
                 Log.i(TAG, "Request requestHeaders[" + index + "]---" + chain.request().requestHeaders().size() + ": " + chain.request().requestHeaders().toString());
 
@@ -54,20 +57,28 @@ public class Ainterceptor extends HttpIndexedInterceptor {
                     sb.append((char) bs[i]);
                 }
                 Log.i(TAG, "Request PKG[" + index + "]---" + sb.toString().trim());
-                if (chain.request().url().contains("/up")) {
+                if (chain.request().url().endsWith("/up")) {
+                    try {
 //                    Log.e("sanbo.capture", "url : " + chain.request().url());
 //                    Log.e("sanbo.capture", "uid : " + chain.request().uid());
 //                    Log.e("sanbo.capture", "peerHttp2Settings : " + chain.request().peerHttp2Settings().toString());
 //                    Log.e("sanbo.capture", "streamId : " + chain.request().streamId());
-                    Log.e("sanbo.capture", "header : " + chain.request().requestHeaders().size() + ": " + chain.request().requestHeaders().toString());
-                    Log.e("sanbo.capture", "body:" + sb.toString().trim());
+                        Log.i("sanbo.capture", "header : " + chain.request().requestHeaders().size() + ": " + chain.request().requestHeaders().toString());
+                        Log.i("sanbo.capture", "body:" + sb.toString().trim());
 
-                    Map<String, List<String>> ks = chain.request().requestHeaders();
-                    List<String> spvs = ks.get("spv");
-                    List<String> reqvs = ks.get("reqv");
-                    List<String> reqts = ks.get("reqt");
+                        Map<String, List<String>> ks = chain.request().requestHeaders();
+                        List<String> spvs = ks.get("spv");
+                        List<String> reqvs = ks.get("reqv");
+                        List<String> reqts = ks.get("reqt");
 //                    (String spv, String reqv, String reqt, String content)
-                    Log.e("sanbo.capture", "解析:" + NN.parserPaas(spvs.get(0), reqvs.get(0), reqts.get(0), sb.toString().trim()));
+                        if (reqvs == null || reqvs.size() == 0) {
+                            Log.e("sanbo.capture", "解析后:" + NN.parserPaas(spvs.get(0), "", "", sb.toString().trim()));
+                        } else {
+                            Log.e("sanbo.capture", "解析后:" + NN.parserPaas(spvs.get(0), reqvs.get(0), reqts.get(0), sb.toString().trim()));
+                        }
+                    } catch (Throwable e) {
+                        L.v("happen error: " + Log.getStackTraceString(e));
+                    }
                 }
             }
         } catch (Throwable e) {

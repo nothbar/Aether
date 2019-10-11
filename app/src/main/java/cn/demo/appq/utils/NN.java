@@ -3,6 +3,8 @@ package cn.demo.appq.utils;
 import android.text.TextUtils;
 import android.util.Base64;
 
+import com.github.megatronking.netbare.L;
+
 public class NN {
 
     /**
@@ -30,7 +32,7 @@ public class NN {
         if (!TextUtils.isEmpty(reqv)) {
             String pwd = PaasKey.getEncryptKey(new String(Base64.decode(spv, Base64.DEFAULT)),
                     reqt);
-            L.e("加密key：" + pwd);
+            L.w("=============加密key=============[" + pwd+"]=====================");
             if ("1".equals(reqv.trim())) {
                 result = parserAesEcb(pwd, result);
             } else if ("2".equals(reqv.trim())) {

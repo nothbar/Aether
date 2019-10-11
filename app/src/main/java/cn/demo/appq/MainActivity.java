@@ -12,6 +12,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 
+import com.github.megatronking.netbare.L;
 import com.github.megatronking.netbare.NetBare;
 import com.github.megatronking.netbare.NetBareConfig;
 import com.github.megatronking.netbare.NetBareListener;
@@ -22,8 +23,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
-import cn.demo.appq.utils.L;
 
 public class MainActivity extends Activity implements NetBareListener {
 

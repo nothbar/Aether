@@ -3,11 +3,11 @@ package cn.demo.appq;
 import android.app.Application;
 import android.content.Context;
 
+import com.github.megatronking.netbare.L;
 import com.github.megatronking.netbare.NetBare;
 import com.github.megatronking.netbare.NetBareUtils;
 import com.github.megatronking.netbare.ssl.JKS;
 
-import cn.demo.appq.utils.L;
 import me.weishu.reflection.Reflection;
 
 public class App extends Application {
@@ -17,10 +17,13 @@ public class App extends Application {
 
     private static JKS mJKS = null;
 
+    private static Context mContext = L.getContext(null);
+
+
     @Override
     public void onCreate() {
         super.onCreate();
-
+        mContext = this;
 
         L.i("=======================================================");
         L.i("===============Application.onCreate===============");
@@ -44,4 +47,9 @@ public class App extends Application {
             Reflection.unseal(base);
         }
     }
+
+    public static String getProcessNameByUid(int uid) {
+        return mContext.getPackageManager().getNameForUid(uid);
+    }
+
 }
