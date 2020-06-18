@@ -23,19 +23,22 @@ public class DBManager {
                     daoMaster.getDatabase().execSQL(
                            "CREATE VIEW IF NOT EXISTS APP_USAGE_TRAFFIC_RANK \n" +
                                    "AS\n" +
-                                   "SELECT APP_NAME ,COUNT(*), SUM(LENGTH),MIN(TIME)\n" +
+                                   "SELECT APP_NAME AS app_name," +
+                                   "COUNT(*) AS req_count, " +
+                                   "SUM(LENGTH) AS usage_net," +
+                                   "MIN(TIME) AS begin_time\n" +
                                    "FROM NETWORK_REQUEST_DETAILED \n" +
                                    "GROUP BY APP_NAME \n" +
                                    "ORDER BY SUM(LENGTH) DESC;");
                     daoMaster.getDatabase().execSQL(
-                           "CREATE VIEW [PORT_USAGE_TRAFFIC_RANK]\n" +
+                           "CREATE VIEW IF NOT EXISTS [HOST_USAGE_TRAFFIC_RANK]\n" +
                                    "AS\n" +
                                    "SELECT \n" +
-                                   "       APP_NAME, \n" +
-                                   "       HOST, \n" +
-                                   "       COUNT(*), \n" +
-                                   "       SUM(LENGTH), \n" +
-                                   "       MIN(TIME)\n" +
+                                   "       APP_NAME AS app_name, \n" +
+                                   "       HOST AS host, \n" +
+                                   "       COUNT(*) AS req_count, \n" +
+                                   "       SUM(LENGTH)  AS usage_net, \n" +
+                                   "       MIN(TIME) AS begin_time\n" +
                                    "FROM   NETWORK_REQUEST_DETAILED\n" +
                                    "GROUP  BY HOST\n" +
                                    "ORDER  BY SUM(LENGTH) DESC;");
