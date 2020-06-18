@@ -21,10 +21,24 @@ public class DBManager {
                     DaoMaster daoMaster = new DaoMaster(db);
                     //汇总APP使用流量排行
                     daoMaster.getDatabase().execSQL(
-                            "DROP VIEW IF EXISTS SUM_VIEW;\n" +
-                                    "CREATE VIEW IF NOT EXISTS SUM_VIEW AS\n" +
-                                    "SELECT APP_NAME ,HOST,COUNT(*), SUM(LENGTH),MIN(TIME)\n" +
-                                    "FROM  REQ_ENTITY GROUP BY HOST ORDER BY SUM(LENGTH) DESC;");
+                           "CREATE VIEW IF NOT EXISTS APP_USAGE_TRAFFIC_RANK \n" +
+                                   "AS\n" +
+                                   "SELECT APP_NAME ,COUNT(*), SUM(LENGTH),MIN(TIME)\n" +
+                                   "FROM NETWORK_REQUEST_DETAILED \n" +
+                                   "GROUP BY APP_NAME \n" +
+                                   "ORDER BY SUM(LENGTH) DESC;");
+                    daoMaster.getDatabase().execSQL(
+                           "CREATE VIEW [PORT_USAGE_TRAFFIC_RANK]\n" +
+                                   "AS\n" +
+                                   "SELECT \n" +
+                                   "       APP_NAME, \n" +
+                                   "       HOST, \n" +
+                                   "       COUNT(*), \n" +
+                                   "       SUM(LENGTH), \n" +
+                                   "       MIN(TIME)\n" +
+                                   "FROM   NETWORK_REQUEST_DETAILED\n" +
+                                   "GROUP  BY HOST\n" +
+                                   "ORDER  BY SUM(LENGTH) DESC;");
                     instance = daoMaster.newSession();
                 }
             }
