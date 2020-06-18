@@ -6,12 +6,18 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 
-@Entity
+/**
+ *
+ */
+@Entity(nameInDb = "NETWORK_REQUEST_DETAILED")
 public class ReqEntity {
     @Id(autoincrement = true)
     private Long id;
     private String sessionId;
     private String appName;
+    private String appPackage;
+    private String appVersion;
+    private String appVersionCode;
     private String url;
     private String host;
     private Integer port;
@@ -34,9 +40,10 @@ public class ReqEntity {
     private String respMessage;
     private Integer respCode;
     private Boolean isWebSocket;
-    @Generated(hash = 1142309832)
-    public ReqEntity(Long id, String sessionId, String appName, String url,
-            String host, Integer port, Integer index, String ip, String protocol,
+    @Generated(hash = 145952939)
+    public ReqEntity(Long id, String sessionId, String appName, String appPackage,
+            String appVersion, String appVersionCode, String url, String host,
+            Integer port, Integer index, String ip, String protocol,
             String httpProtocol, String method, String path, Boolean isHttps,
             Long time, Integer uid, Integer length, Integer streamId,
             String requestHeaders, String clientHttp2Settings,
@@ -45,6 +52,9 @@ public class ReqEntity {
         this.id = id;
         this.sessionId = sessionId;
         this.appName = appName;
+        this.appPackage = appPackage;
+        this.appVersion = appVersion;
+        this.appVersionCode = appVersionCode;
         this.url = url;
         this.host = host;
         this.port = port;
@@ -220,6 +230,24 @@ public class ReqEntity {
     }
     public void setIsWebSocket(Boolean isWebSocket) {
         this.isWebSocket = isWebSocket;
+    }
+    public String getAppPackage() {
+        return this.appPackage;
+    }
+    public void setAppPackage(String appPackage) {
+        this.appPackage = appPackage;
+    }
+    public String getAppVersion() {
+        return this.appVersion;
+    }
+    public void setAppVersion(String appVersion) {
+        this.appVersion = appVersion;
+    }
+    public String getAppVersionCode() {
+        return this.appVersionCode;
+    }
+    public void setAppVersionCode(String appVersionCode) {
+        this.appVersionCode = appVersionCode;
     }
 
 

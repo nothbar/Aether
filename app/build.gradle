@@ -60,4 +60,5 @@ dependencies {
     implementation project(':netbare-injector')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'org.greenrobot:greendao:3.2.2'
+    implementation 'com.blankj:utilcode:1.29.0'
 }

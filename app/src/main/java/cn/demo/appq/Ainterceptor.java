@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
+import com.blankj.utilcode.util.AppUtils;
 import com.github.megatronking.netbare.http.HttpIndexedInterceptor;
 import com.github.megatronking.netbare.http.HttpInterceptor;
 import com.github.megatronking.netbare.http.HttpInterceptorFactory;
@@ -55,12 +56,17 @@ public class Ainterceptor extends HttpIndexedInterceptor {
                 entity.setRespContent(reqContent + IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()));
             }
             entity.setIndex(index);
+            entity.setLength(entity.getLength() + buffer.limit());
             DBManager.getInstance().getReqEntityDao().update(entity);
         } else {
+            String packagename = App.getProcessNameByUid(request.uid());
             ReqEntity reqEntity = new ReqEntity(
                     null,
                     request.id(),
-                    App.getProcessNameByUid(request.uid()),
+                    AppUtils.getAppName(packagename),
+                    packagename,
+                    AppUtils.getAppVersionName(packagename),
+                    String.valueOf(AppUtils.getAppVersionCode(packagename)),
                     request.url(),
                     request.host(),
                     request.port(),
@@ -109,6 +115,8 @@ public class Ainterceptor extends HttpIndexedInterceptor {
             }
             entity.setRespMessage(response.message());
             entity.setIsWebSocket(response.isWebSocket());
+            entity.setIndex(index);
+            entity.setLength(entity.getLength() + buffer.limit());
             DBManager.getInstance().getReqEntityDao().update(entity);
         }
 
