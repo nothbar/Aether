@@ -14,8 +14,10 @@ import com.github.megatronking.netbare.http.HttpResponseChain;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.List;
 
 import cn.demo.appq.entity.ReqEntity;
+import cn.demo.appq.greendao.ReqEntityDao;
 import cn.demo.appq.utils.DBManager;
 import cn.demo.appq.utils.IOUtils;
 
@@ -39,30 +41,50 @@ public class Ainterceptor extends HttpIndexedInterceptor {
     @Override
     protected void intercept(@NonNull HttpRequestChain chain, @NonNull ByteBuffer buffer, int index) throws IOException {
         HttpRequest request = chain.request();
-        ReqEntity reqEntity = new ReqEntity(
-                null, //id 自增
-                request.id(),
-                App.getProcessNameByUid(request.uid()),
-                request.url(),
-                request.host(),
-                request.port(),
-                index,
-                request.ip(),
-                request.protocol().toString(),
-                request.httpProtocol().toString(),
-                request.method().name(),
-                request.path(),
-                request.isHttps(),
-                false,
-                request.time(),
-                request.uid(),
-                buffer.limit(),
-                request.streamId(),
-                request.requestHeaders().toString(),
-                "",
-               "",
-                IOUtils.byteBuffer2String(buffer));
-        DBManager.getInstance().getReqEntityDao().insert(reqEntity);
+        List<ReqEntity> reqEntities = DBManager.getInstance()
+                .getReqEntityDao()
+                .queryBuilder()
+                .where(ReqEntityDao.Properties.SessionId.eq(request.id()))
+                .list();
+        if (reqEntities != null && reqEntities.size() > 0) {
+            ReqEntity entity = reqEntities.get(0);
+            String reqContent = entity.getReqContent();
+            if (reqContent == null) {
+                entity.setRespContent(IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()));
+            } else {
+                entity.setRespContent(reqContent + IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()));
+            }
+            entity.setIndex(index);
+            DBManager.getInstance().getReqEntityDao().update(entity);
+        } else {
+            ReqEntity reqEntity = new ReqEntity(
+                    null,
+                    request.id(),
+                    App.getProcessNameByUid(request.uid()),
+                    request.url(),
+                    request.host(),
+                    request.port(),
+                    index,
+                    request.ip(),
+                    request.protocol().toString(),
+                    request.httpProtocol().toString(),
+                    request.method().name(),
+                    request.path(),
+                    request.isHttps(),
+                    request.time(),
+                    request.uid(),
+                    buffer.limit(),
+                    request.streamId(),
+                    request.requestHeaders().toString(),
+                    "",
+                    "",
+                    IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()),
+                    null,
+                    null,
+                    null,
+                    null);
+            DBManager.getInstance().getReqEntityDao().insert(reqEntity);
+        }
         chain.process(buffer);
     }
 
@@ -70,30 +92,26 @@ public class Ainterceptor extends HttpIndexedInterceptor {
     @Override
     protected void intercept(@NonNull HttpResponseChain chain, @NonNull ByteBuffer buffer, int index) throws IOException {
         HttpResponse response = chain.response();
-        ReqEntity reqEntity = new ReqEntity(
-                null, //id 自增
-                response.id(),
-                App.getProcessNameByUid(response.uid()),
-                response.url(),
-                response.host(),
-                response.port(),
-                index,
-                response.ip(),
-                response.protocol().toString(),
-                response.httpProtocol().toString(),
-                response.method().name(),
-                response.path(),
-                response.isHttps(),
-                true,
-                response.time(),
-                response.uid(),
-                buffer.limit(),
-                response.streamId(),
-                response.requestHeaders().toString(),
-                "",
-                "",
-                IOUtils.byteBuffer2String(buffer));
-        DBManager.getInstance().getReqEntityDao().insert(reqEntity);
+        List<ReqEntity> reqEntities = DBManager.getInstance()
+                .getReqEntityDao()
+                .queryBuilder()
+                .where(ReqEntityDao.Properties.SessionId.eq(response.id()))
+                .list();
+
+        if (reqEntities != null && reqEntities.size() > 0) {
+            ReqEntity entity = reqEntities.get(0);
+            entity.setRespCode(response.code());
+            String s = entity.getRespContent();
+            if (s == null) {
+                entity.setRespContent(IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()));
+            } else {
+                entity.setRespContent(s + IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()));
+            }
+            entity.setRespMessage(response.message());
+            entity.setIsWebSocket(response.isWebSocket());
+            DBManager.getInstance().getReqEntityDao().update(entity);
+        }
+
         chain.process(buffer);
     }
 }

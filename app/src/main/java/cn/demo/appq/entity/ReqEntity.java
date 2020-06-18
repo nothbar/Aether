@@ -4,10 +4,8 @@ package cn.demo.appq.entity;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Index;
 
-/**
- * 详细的
- */
 @Entity
 public class ReqEntity {
     @Id(autoincrement = true)
@@ -24,7 +22,6 @@ public class ReqEntity {
     private String method;
     private String path;
     private Boolean isHttps;
-    private Boolean isResp;
     private Long time;
     private Integer uid;
     private Integer length;
@@ -32,15 +29,19 @@ public class ReqEntity {
     private String requestHeaders;
     private String clientHttp2Settings;
     private String peerHttp2Settings;
-    private String content;
-
-    @Generated(hash = 2084780238)
+    private String reqContent;
+    private String respContent;
+    private String respMessage;
+    private Integer respCode;
+    private Boolean isWebSocket;
+    @Generated(hash = 1142309832)
     public ReqEntity(Long id, String sessionId, String appName, String url,
-                     String host, Integer port, Integer index, String ip, String protocol,
-                     String httpProtocol, String method, String path, Boolean isHttps,
-                     Boolean isResp, Long time, Integer uid, Integer length,
-                     Integer streamId, String requestHeaders, String clientHttp2Settings,
-                     String peerHttp2Settings, String content) {
+            String host, Integer port, Integer index, String ip, String protocol,
+            String httpProtocol, String method, String path, Boolean isHttps,
+            Long time, Integer uid, Integer length, Integer streamId,
+            String requestHeaders, String clientHttp2Settings,
+            String peerHttp2Settings, String reqContent, String respContent,
+            String respMessage, Integer respCode, Boolean isWebSocket) {
         this.id = id;
         this.sessionId = sessionId;
         this.appName = appName;
@@ -54,7 +55,6 @@ public class ReqEntity {
         this.method = method;
         this.path = path;
         this.isHttps = isHttps;
-        this.isResp = isResp;
         this.time = time;
         this.uid = uid;
         this.length = length;
@@ -62,187 +62,164 @@ public class ReqEntity {
         this.requestHeaders = requestHeaders;
         this.clientHttp2Settings = clientHttp2Settings;
         this.peerHttp2Settings = peerHttp2Settings;
-        this.content = content;
+        this.reqContent = reqContent;
+        this.respContent = respContent;
+        this.respMessage = respMessage;
+        this.respCode = respCode;
+        this.isWebSocket = isWebSocket;
     }
-
     @Generated(hash = 1573136)
     public ReqEntity() {
     }
-
     public Long getId() {
         return this.id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getSessionId() {
         return this.sessionId;
     }
-
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
-
     public String getAppName() {
         return this.appName;
     }
-
     public void setAppName(String appName) {
         this.appName = appName;
     }
-
     public String getUrl() {
         return this.url;
     }
-
     public void setUrl(String url) {
         this.url = url;
     }
-
     public String getHost() {
         return this.host;
     }
-
     public void setHost(String host) {
         this.host = host;
     }
-
     public Integer getPort() {
         return this.port;
     }
-
     public void setPort(Integer port) {
         this.port = port;
     }
-
     public Integer getIndex() {
         return this.index;
     }
-
     public void setIndex(Integer index) {
         this.index = index;
     }
-
     public String getIp() {
         return this.ip;
     }
-
     public void setIp(String ip) {
         this.ip = ip;
     }
-
     public String getProtocol() {
         return this.protocol;
     }
-
     public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
-
     public String getHttpProtocol() {
         return this.httpProtocol;
     }
-
     public void setHttpProtocol(String httpProtocol) {
         this.httpProtocol = httpProtocol;
     }
-
     public String getMethod() {
         return this.method;
     }
-
     public void setMethod(String method) {
         this.method = method;
     }
-
     public String getPath() {
         return this.path;
     }
-
     public void setPath(String path) {
         this.path = path;
     }
-
     public Boolean getIsHttps() {
         return this.isHttps;
     }
-
     public void setIsHttps(Boolean isHttps) {
         this.isHttps = isHttps;
     }
-
-    public Boolean getIsResp() {
-        return this.isResp;
-    }
-
-    public void setIsResp(Boolean isResp) {
-        this.isResp = isResp;
-    }
-
     public Long getTime() {
         return this.time;
     }
-
     public void setTime(Long time) {
         this.time = time;
     }
-
     public Integer getUid() {
         return this.uid;
     }
-
     public void setUid(Integer uid) {
         this.uid = uid;
     }
-
     public Integer getLength() {
         return this.length;
     }
-
     public void setLength(Integer length) {
         this.length = length;
     }
-
     public Integer getStreamId() {
         return this.streamId;
     }
-
     public void setStreamId(Integer streamId) {
         this.streamId = streamId;
     }
-
     public String getRequestHeaders() {
         return this.requestHeaders;
     }
-
     public void setRequestHeaders(String requestHeaders) {
         this.requestHeaders = requestHeaders;
     }
-
     public String getClientHttp2Settings() {
         return this.clientHttp2Settings;
     }
-
     public void setClientHttp2Settings(String clientHttp2Settings) {
         this.clientHttp2Settings = clientHttp2Settings;
     }
-
     public String getPeerHttp2Settings() {
         return this.peerHttp2Settings;
     }
-
     public void setPeerHttp2Settings(String peerHttp2Settings) {
         this.peerHttp2Settings = peerHttp2Settings;
     }
-
-    public String getContent() {
-        return this.content;
+    public String getReqContent() {
+        return this.reqContent;
     }
-
-    public void setContent(String content) {
-        this.content = content;
+    public void setReqContent(String reqContent) {
+        this.reqContent = reqContent;
+    }
+    public String getRespContent() {
+        return this.respContent;
+    }
+    public void setRespContent(String respContent) {
+        this.respContent = respContent;
+    }
+    public String getRespMessage() {
+        return this.respMessage;
+    }
+    public void setRespMessage(String respMessage) {
+        this.respMessage = respMessage;
+    }
+    public Integer getRespCode() {
+        return this.respCode;
+    }
+    public void setRespCode(Integer respCode) {
+        this.respCode = respCode;
+    }
+    public Boolean getIsWebSocket() {
+        return this.isWebSocket;
+    }
+    public void setIsWebSocket(Boolean isWebSocket) {
+        this.isWebSocket = isWebSocket;
     }
 
 
