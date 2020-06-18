@@ -24,7 +24,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = this;
-
         L.i("=======================================================");
         L.i("===============Application.onCreate===============");
         L.i("=======================================================");
