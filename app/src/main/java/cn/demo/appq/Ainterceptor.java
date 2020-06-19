@@ -26,6 +26,7 @@ public class Ainterceptor extends HttpIndexedInterceptor {
 
 
     private static final String TAG = "Ainterceptor";
+    private static final boolean RECORD_REQUEST_BODY = false;
 
     public static HttpInterceptorFactory createFactory(Context context) {
         return new HttpInterceptorFactory() {
@@ -49,11 +50,13 @@ public class Ainterceptor extends HttpIndexedInterceptor {
                 .list();
         if (reqEntities != null && reqEntities.size() > 0) {
             ReqEntity entity = reqEntities.get(0);
-            String reqContent = entity.getReqContent();
-            if (reqContent == null) {
-                entity.setRespContent(IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()));
-            } else {
-                entity.setRespContent(reqContent + IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()));
+            if (RECORD_REQUEST_BODY) {
+                String reqContent = entity.getReqContent();
+                if (reqContent == null) {
+                    entity.setRespContent(IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()));
+                } else {
+                    entity.setRespContent(reqContent + IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()));
+                }
             }
             entity.setIndex(index);
             entity.setLength(entity.getLength() + buffer.limit());
@@ -84,7 +87,7 @@ public class Ainterceptor extends HttpIndexedInterceptor {
                     request.requestHeaders().toString(),
                     "",
                     "",
-                    IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()),
+                    RECORD_REQUEST_BODY ? IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()) : "",
                     null,
                     null,
                     null,
@@ -107,11 +110,13 @@ public class Ainterceptor extends HttpIndexedInterceptor {
         if (reqEntities != null && reqEntities.size() > 0) {
             ReqEntity entity = reqEntities.get(0);
             entity.setRespCode(response.code());
-            String s = entity.getRespContent();
-            if (s == null) {
-                entity.setRespContent(IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()));
-            } else {
-                entity.setRespContent(s + IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()));
+            if (RECORD_REQUEST_BODY) {
+                String s = entity.getRespContent();
+                if (s == null) {
+                    entity.setRespContent(IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()));
+                } else {
+                    entity.setRespContent(s + IOUtils.byteBuffer2String(buffer.asReadOnlyBuffer()));
+                }
             }
             entity.setRespMessage(response.message());
             entity.setIsWebSocket(response.isWebSocket());
