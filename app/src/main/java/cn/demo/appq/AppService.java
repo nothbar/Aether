@@ -38,7 +38,7 @@ public class AppService extends NetBareService {
     @Override
     protected Notification createNotification() {
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, VPNActivity.class);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.setAction(Intent.ACTION_MAIN);
         PendingIntent pendingIntent = PendingIntent.getActivity(

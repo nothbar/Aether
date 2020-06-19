@@ -29,7 +29,7 @@ public class NetBarePresenter implements BasePresenter {
 
     private int REQUEST_CODE_PREPARE = 1;
 
-    public void prepareNetBare() {
+    public void prepareJks() {
         if (!mNetBare.isActive()) {
             // 安装自签证书
             if (!JKS.isInstalled(activity.getApplicationContext(),
@@ -40,8 +40,12 @@ public class NetBarePresenter implements BasePresenter {
                 } catch (IOException e) {
                     // 安装失败
                 }
-                return;
             }
+        }
+    }
+
+    public void prepareVpn() {
+        if (!mNetBare.isActive()) {
             // 配置VPN
             Intent intent = NetBare.get().prepare();
             if (intent != null) {
@@ -55,6 +59,13 @@ public class NetBarePresenter implements BasePresenter {
             // 启动NetBare服务
             mNetBare.start(NetBareConfig.defaultHttpConfig(App.getJKS(),
                     interceptorFactories()));
+        }
+    }
+
+    public void stopVpn() {
+        if (mNetBare.isActive()) {
+            // 启动NetBare服务
+            mNetBare.stop();
         }
     }
 
